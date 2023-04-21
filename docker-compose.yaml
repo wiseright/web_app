@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  mongodb: 
+    image: 'mongo'
+    container_name: 'mongodb'
+    volumes:
+      - data:/data/db
+  
+  backend:
+    build: 
+      context: ./backend/
+      dockerfile: Dockerfile
+    container_name: 'node-app'
+    ports:
+      - "80:80"
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+  
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    container_name: 'react-app'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    
+
+volumes:
+  data:
+  logs:
+
+
